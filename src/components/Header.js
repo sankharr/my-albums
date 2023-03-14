@@ -11,11 +11,12 @@ import Select from "@mui/material/Select";
 
 const dropDownOptions = ["Title ASC", "Title DESC"];
 
-const Header = () => {
+const Header = ({ updateSortOrder }) => {
   const [sortOption, setSortOption] = React.useState(dropDownOptions[0]);
 
   const handleChange = (event) => {
     setSortOption(event.target.value);
+    updateSortOrder(event.target.value)
   };
 
   return (

@@ -10,17 +10,9 @@ const Footer = () => {
     padding={'0 1vw'}
     color={'white'}
       sx={{
-        width: "98vw",
         height: 40,
         backgroundColor: "primary.dark",
-        // border: 1,
-        // '&:hover': {
-        //   backgroundColor: 'primary.main',
-        //   opacity: [0.9, 0.8, 0.7],
-        // },
       }}
-      position={"absolute"}
-      bottom={"0px"}
     >
       <Typography variant="body2" >&copy; Sankha Rathnayake 2023</Typography>
     </Box>
