@@ -1,14 +1,14 @@
+// modules
 import React, { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-// import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-// import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import LinesEllipsis from "react-lines-ellipsis";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, Link, useNavigate } from "react-router-dom";
+const Container = React.lazy(() => import("@mui/material/Container"));
+const Box = React.lazy(() => import("@mui/material/Box"));
+const Stack = React.lazy(() => import("@mui/material/Stack"));
+const Grid = React.lazy(() => import("@mui/material/Grid"));
+const Typography = React.lazy(() => import("@mui/material/Typography"));
+const CircularProgress = React.lazy(() => import("@mui/material/CircularProgress"));
 
+// function to compare title
 const compareTitles = (a, b) => {
   if (a.title < b.title) {
     return -1;
@@ -19,11 +19,27 @@ const compareTitles = (a, b) => {
   return 0;
 };
 
+// album card implementation
 const AlbumCard = ({ albumData }) => {
-  //   console.log("albumData", albumData);
+  const navigate = useNavigate();
+
   return (
-    <Box sx={{ border: 2, padding: 2 }}>
-      <Stack direction="row" spacing={2}>
+    <Box
+      component="div"
+      sx={{
+        boxShadow:
+          "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+        padding: {xs: 4, sm: 2},
+        textOverflow: "ellipsis",
+        
+      }}
+      onClick={() =>
+        navigate(`/overview/${albumData.id}`, {
+          state: { albumTitle: albumData.title },
+        })
+      }
+    >
+      <Stack direction={{xs: 'column', sm: 'row'}} spacing={2}>
         <img
           // key={item.title}
           src={albumData.thumbnailUrl}
@@ -31,15 +47,14 @@ const AlbumCard = ({ albumData }) => {
           alt={albumData.title}
           loading="lazy"
         />
-        <Stack direction="column">
-          <Typography variant="h6" gutterBottom={true}>
-            <LinesEllipsis
-              text={albumData.title}
-              maxLine="1"
-              ellipsis="..."
-              trimRight
-              basedOn="letters"
-            />
+        <Stack direction="column" display={'flex'} alignItems={{xs: 'center', sm: 'unset'}}>
+          <Typography
+            variant="h6"
+            gutterBottom={true}
+            noWrap={true}
+            sx={{ width: "60vw" }}
+          >
+            {albumData.title}
           </Typography>
           <Typography variant="body1">
             ({albumData.photoCount} pictures)
@@ -50,14 +65,6 @@ const AlbumCard = ({ albumData }) => {
   );
 };
 
-// const Item = styled(Paper)(({ theme }) => ({
-//   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-//   ...theme.typography.body2,
-//   padding: theme.spacing(1),
-//   textAlign: "center",
-//   color: theme.palette.text.secondary,
-// }));
-
 const Overview = () => {
   let albumDataArray = [],
     photoDataArray = [],
@@ -67,10 +74,20 @@ const Overview = () => {
     photoCount,
     tempStack;
 
+  const [loading, setLoading] = useState(true);
   const [albumData, setAlbumData] = useState();
   const [sortOrder, setSortOrder] = useOutletContext();
 
   useEffect(() => {
+    fetchData();
+  }, []);
+  useEffect(() => {
+    console.log("executed", sortOrder);
+    sortData(sortOrder);
+  }, [sortOrder, albumData]);
+
+//   function that is used to fetch data and build up the needed data array
+  const fetchData = () => {
     fetch("https://jsonplaceholder.typicode.com/albums?userId=2")
       .then((res) => res.json())
       .then((data) => {
@@ -100,6 +117,7 @@ const Overview = () => {
             console.log("tempArray", tempArray);
             setAlbumData(tempArray);
             console.log("albumData", albumData);
+            setLoading(false);
           })
           .catch((error) =>
             console.log("error occured while retrieving photo data", error)
@@ -108,43 +126,45 @@ const Overview = () => {
       .catch((error) =>
         console.log("error occured while retrieving album data", error)
       );
-  }, []);
+  };
 
-  useEffect(() => {
-    console.log("executed", sortOrder);
-    sortData(sortOrder);
-  }, [sortOrder,albumData]);
-
+//   this is used to sort the data in an array and update the state with that array
   const sortData = (order) => {
     tempStack = albumData;
     if (order === "Title DESC") {
       tempStack?.sort(compareTitles);
-      setAlbumData(tempStack);
     } else {
       tempStack?.sort(compareTitles).reverse();
-      setAlbumData(tempStack);
     }
+    setAlbumData(tempStack);
   };
   return (
     <Container
-      sx={{ position: "relative", flexGrow: 1, padding: 2 }}
+      sx={{
+        position: "relative",
+        flexGrow: 1,
+        padding: 2,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: loading ? "center" : "unset",
+        justifyContent: loading ? "center" : "unset",
+      }}
       maxWidth={"xl"}
       disableGutters={false}
     >
-      <Grid container spacing={2}>
-        {albumData?.map((item) => (
-          <Grid item xs={12} sm={6} key={item.title}>
-            <AlbumCard key={item.title} albumData={item} />
-            {/* <img
-              // key={item.title}
-              src={item.thumbnailUrl}
-              srcSet={item.thumbnailUrl}
-              alt={item.title}
-              loading="lazy"
-            /> */}
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Grid container spacing={2}>
+            {albumData?.map((item) => (
+              <Grid item xs={12} sm={6} key={item.title}>
+                <AlbumCard key={item.title} albumData={item} />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        </>
+      )}
     </Container>
   );
 };

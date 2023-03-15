@@ -18,7 +18,7 @@ function Router() {
       children: [
         { path: "/", element: <Navigate to="/overview" /> },
         { path: "overview", element: <Overview /> },
-        { path: "albumDetail", element: <AlbumDetail /> },
+        { path: "overview/:albumId", element: <AlbumDetail /> },
         { path: "errorPage", element: <ErrorPage /> },
       ],
     },

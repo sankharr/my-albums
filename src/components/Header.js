@@ -1,13 +1,13 @@
 // modules
 import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+const AppBar = React.lazy(() => import("@mui/material/AppBar"));
+const Box = React.lazy(() => import("@mui/material/Box"));
+const Toolbar = React.lazy(() => import("@mui/material/Toolbar"));
+const Typography = React.lazy(() => import("@mui/material/Typography"));
+const InputLabel = React.lazy(() => import("@mui/material/InputLabel"));
+const MenuItem = React.lazy(() => import("@mui/material/MenuItem"));
+const FormControl = React.lazy(() => import("@mui/material/FormControl"));
+const Select = React.lazy(() => import("@mui/material/Select"));
 
 const dropDownOptions = ["Title ASC", "Title DESC"];
 
@@ -16,7 +16,7 @@ const Header = ({ updateSortOrder }) => {
 
   const handleChange = (event) => {
     setSortOption(event.target.value);
-    updateSortOrder(event.target.value)
+    updateSortOrder(event.target.value);
   };
 
   return (
@@ -28,15 +28,17 @@ const Header = ({ updateSortOrder }) => {
         <Box
         // sx={{ display: { xs: "none", sm: "block" } }}
         >
-          <FormControl variant="filled" size="small" sx={{color: 'white'}}>
-            <InputLabel id="demo-simple-select-label" sx={{color: 'white'}}>Sort By</InputLabel>
+          <FormControl variant="filled" size="small" sx={{ color: "white" }}>
+            <InputLabel id="demo-simple-select-label" sx={{ color: "white" }}>
+              Sort By
+            </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={sortOption}
               label="Age"
               onChange={handleChange}
-              sx={{color: 'white'}}
+              sx={{ color: "white" }}
             >
               {dropDownOptions.map((option) => (
                 <MenuItem key={option} value={option}>
