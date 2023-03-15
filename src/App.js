@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Router from "./routes";
-import CircularProgress from "@mui/material/CircularProgress";
 import LoadingPage from "./components/LoadingPage";
 
 function App() {

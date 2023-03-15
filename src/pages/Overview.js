@@ -52,7 +52,7 @@ const AlbumCard = ({ albumData }) => {
             variant="h6"
             gutterBottom={true}
             noWrap={true}
-            sx={{ width: "60vw" }}
+            sx={{ width: {xs: "60vw", sm: "30vw"} }}
           >
             {albumData.title}
           </Typography>
